@@ -1,7 +1,7 @@
-#Game Off 2017 Entry#
+# Game Off 2017 Entry 
 
-##Theme: Throwback##
+## Theme: Throwback
 
-###a throwback to the days of Wizardy, Standing Stones, and The Bards Tale###
+### a throwback to the days of Wizardy, Standing Stones, and The Bards Tale
 
 https://itch.io/jam/game-off-2017
