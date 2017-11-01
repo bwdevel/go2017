@@ -1,19 +1,22 @@
 function love.load()
   debug = false
   grid = {}
-  grid[1] = {1, 1, 1, 1, 1, 1, 1, 1}
-  grid[2] = {1, 0, 0, 0, 0, 0, 1, 1}
-  grid[3] = {1, 0, 1, 0, 1, 0, 1, 1}
-  grid[4] = {1, 0, 1, 1, 1, 0, 1, 1}
-  grid[5] = {1, 0, 1, 0, 0, 0, 1, 1}
-  grid[6] = {1, 0, 0, 0, 0, 0, 1, 1}
-  grid[7] = {1, 1, 1, 1, 1, 1, 1, 1}
-  grid[8] = {1, 1, 1, 1, 1, 1, 1, 1}
+  grid[1] = {1, 1, 1, 1, 1, 1, 1, 1, 1}
+  grid[2] = {1, 0, 0, 0, 0, 0, 0, 1, 1}
+  grid[3] = {1, 1, 0, 1, 0, 1, 0, 0, 1}
+  grid[4] = {1, 1, 0, 1, 1, 1, 0, 1, 1}
+  grid[5] = {1, 1, 0, 1, 0, 0, 0, 1, 1}
+  grid[6] = {1, 0, 0, 0, 0, 0, 0, 0, 1}
+  grid[7] = {1, 0, 1, 1, 0, 1, 1, 0, 1}
+  grid[8] = {1, 0, 0, 0, 0, 0, 0, 0, 1}
+  grid[9] = {1, 1, 1, 1, 1, 1, 1, 1, 1}
   player = {}
   player.d = 0
   player.x = 6
-  player.y = 2
+  player.y = 3
+  player.rot = 1
   arrow = love.graphics.newImage('assets/img/arrow_01.png')
+  rotations = {0, (math.pi * 2) / 4, math.pi, math.pi + math.pi / 2}
 
 end
 
@@ -29,7 +32,7 @@ function love.draw()
 end
 
 function love.keyreleased(key)
-  if key == 'q' then love.event.quit() end
+  if key == 'escape' then love.event.quit() end
   if key == 'p' then
     if debug then debug = false else debug = true end
   end
@@ -53,6 +56,14 @@ function love.keyreleased(key)
       player.y = player.y + 1
     end
   end
+  if key == 'q' then
+    player.rot = player.rot - 1
+    if player.rot < 1 then player.rot = 4 end
+  end
+  if key == 'e' then
+    player.rot = player.rot + 1
+    if player.rot > 4 then player.rot = 1 end
+  end
 end
 
 function debug_draw()
@@ -67,13 +78,14 @@ function debug_draw()
   love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), x + 2, y + 2)
   love.graphics.print('Player x/y: ' .. tostring(player.x) .. '/' .. tostring(player.y), x + 2, y + 14)
   love.graphics.print('Current Sqr Val: ' .. tostring(grid[player.x][player.y]), x + 2, y + 26)
+  love.graphics.print('Player Rot: ' .. tostring(player.rot) .. '(' .. tostring(rotations[player.rot]) .. ')', x + 2, y + 38)
 end
 
 function grid_draw()
   love.graphics.setColor(0, 0, 255, 255)
-  for x = 1, 8, 1 do
-    for y = 1, 8, 1 do
-      local xx = (x - 1) * 16 + 400
+  for x = 1, #grid, 1 do
+    for y = 1, #grid[x], 1 do
+      local xx = (x - 1) * 16 + 800
       local yy = (y - 1) * 16 + 250
       local fill = 'line'
       if grid[x][y] == 1 then fill = 'fill' end
@@ -81,7 +93,7 @@ function grid_draw()
       if x == player.x and y == player.y then
         love.graphics.setColor(255, 255, 255, 255)
         --love.graphics.rectangle('fill', xx + 2, yy + 2, 12, 12)
-        love.graphics.draw(arrow, xx + 2, yy + 2)
+        love.graphics.draw(arrow, xx + 2 + 7, yy + 2 + 7, rotations[player.rot], 1, 1, 7 , 7)
         love.graphics.setColor(0, 0, 255, 255)
       end
     end
@@ -89,10 +101,10 @@ function grid_draw()
 end
 
 function view_draw()
-  local xx = 200
-  local yy = 250
-  local ww = 128
-  local hh = 128
+  local xx = 100
+  local yy = love.graphics.getHeight() / 2 - 512 / 2
+  local ww = 512
+  local hh = 512
   love.graphics.setColor(255, 255, 255, 255)
   love.graphics.rectangle('line', xx, yy, ww, hh)
 
