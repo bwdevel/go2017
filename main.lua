@@ -13,6 +13,7 @@ function love.load()
   player.d = 0
   player.x = 6
   player.y = 2
+  arrow = love.graphics.newImage('assets/img/arrow_01.png')
 
 end
 
@@ -23,6 +24,7 @@ end
 
 function love.draw()
   grid_draw()
+  view_draw()
   if debug then debug_draw() end
 end
 
@@ -71,16 +73,113 @@ function grid_draw()
   love.graphics.setColor(0, 0, 255, 255)
   for x = 1, 8, 1 do
     for y = 1, 8, 1 do
-      local xx = (x - 1) * 16 + 100
-      local yy = (y - 1) * 16 + 100
+      local xx = (x - 1) * 16 + 400
+      local yy = (y - 1) * 16 + 250
       local fill = 'line'
       if grid[x][y] == 1 then fill = 'fill' end
       love.graphics.rectangle(fill, xx, yy, 16, 16)
       if x == player.x and y == player.y then
         love.graphics.setColor(255, 255, 255, 255)
-        love.graphics.rectangle('fill', xx + 2, yy + 2, 12, 12)
+        --love.graphics.rectangle('fill', xx + 2, yy + 2, 12, 12)
+        love.graphics.draw(arrow, xx + 2, yy + 2)
         love.graphics.setColor(0, 0, 255, 255)
       end
     end
   end
+end
+
+function view_draw()
+  local xx = 200
+  local yy = 250
+  local ww = 128
+  local hh = 128
+  love.graphics.setColor(255, 255, 255, 255)
+  love.graphics.rectangle('line', xx, yy, ww, hh)
+
+  -- draw left
+  if grid[player.x - 1][player.y] == 1 then
+    local x1 = xx
+    local y1 = yy
+    local x2 = xx + ww / 4
+    local y2 = yy + hh / 4
+    local x3 = xx + ww / 4
+    local y3 = yy + hh - hh / 4
+    local x4 = xx
+    local y4 = yy + hh
+    love.graphics.line(x1, y1, x2, y2, x3, y3, x4, y4)
+  end
+  -- draw right
+  if grid[player.x + 1][player.y] == 1 then
+    local x1 = xx + ww
+    local y1 = yy
+    local x2 = x1 - ww / 4
+    local y2 = yy + hh / 4
+    local x3 = x2
+    local y3 = yy + hh - hh / 4
+    local x4 = x1
+    local y4 = yy + hh
+    love.graphics.line(x1, y1, x2, y2, x3, y3, x4, y4)
+  end
+
+  -- draw left far
+  if grid[player.x - 1][player.y - 1] == 1 and grid[player.x][player.y - 1] == 0 then
+    local x1 = xx + ww / 4
+    local y1 = yy + hh / 4
+    local x2 = xx + ww / 4 + ww / 8
+    local y2 = yy + hh / 4 + hh / 8
+    local x3 = x2
+    local y3 = y2 + hh / 4
+    local x4 = x1
+    local y4 = yy + hh - hh / 4
+    love.graphics.line(x1, y1, x2, y2, x3, y3, x4, y4)
+  end
+  -- draw right far
+  if grid[player.x + 1][player.y - 1] == 1 and grid[player.x][player.y - 1] == 0 then
+    local x1 = xx + ww / 2 + ww / 4
+    local y1 = yy + hh / 4
+    local x2 = xx + ww / 2 + ww / 8
+    local y2 = yy + hh / 4 + hh / 8
+    local x3 = x2
+    local y3 = y2 + hh / 4
+    local x4 = x1
+    local y4 = yy + hh - hh / 4
+    love.graphics.line(x1, y1, x2, y2, x3, y3, x4, y4)
+  end
+
+
+
+
+  -- draw front center
+  if grid[player.x][player.y - 1] == 1 then
+    local x1 = xx + ww / 4
+    local y1 = yy + hh / 4
+    local w1 = ww / 2
+    local h1 = hh / 2
+    love.graphics.rectangle('line', x1, y1, w1, h1)
+  end
+  -- draw font left
+  if grid[player.x - 1][player.y -1] == 1 and grid[player.x - 1][player.y] == 0 then
+    local x1 = xx
+    local y1 = yy + hh / 4
+    local w1 = ww / 4
+    local h1 = hh / 2
+    love.graphics.rectangle('line', x1, y1, w1, h1)
+  end
+  -- draw font left
+  if grid[player.x + 1][player.y -1] == 1 and grid[player.x + 1][player.y] == 0 then
+    local x1 = xx + ww - ww / 4
+    local y1 = yy + hh / 4
+    local w1 = ww / 4
+    local h1 = hh / 2
+    love.graphics.rectangle('line', x1, y1, w1, h1)
+  end
+  -- draw front center far
+  if grid[player.x][player.y - 2] == 1 and grid[player.x][player.y - 1] == 0 then
+    local x1 = xx + ww / 4 + ww / 8
+    local y1 = yy + hh / 4 + ww / 8
+    local w1 = ww / 4
+    local h1 = hh / 4
+    love.graphics.rectangle('line', x1, y1, w1, h1)
+  end
+
 end
