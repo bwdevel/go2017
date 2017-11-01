@@ -1,4 +1,5 @@
 function love.load()
+  love.filesystem.setIdentity('screenshots')
   debug = false
   grid = {}
   grid[1] = {1, 1, 1, 1, 1, 1, 1, 1, 1}
@@ -63,6 +64,12 @@ function love.keyreleased(key)
   if key == 'e' then
     player.rot = player.rot + 1
     if player.rot > 4 then player.rot = 1 end
+  end
+  if key == 'printscreen' then
+    local screenshot = love.graphics.newScreenshot()
+    local filename = tostring(os.time()) .. '.png'
+    print("Creating screenshot: " .. filename)
+    screenshot:encode('png', filename)
   end
 end
 
