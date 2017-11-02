@@ -23,7 +23,6 @@ end
 
 function love.update(dt)
 
-
 end
 
 function love.draw()
@@ -112,9 +111,13 @@ function view_draw()
   local yy = love.graphics.getHeight() / 2 - 512 / 2
   local ww = 512
   local hh = 512
-  love.graphics.setColor(255, 255, 255, 255)
-  love.graphics.rectangle('line', xx, yy, ww, hh)
+  -- draw floor and ceiling
+  love.graphics.setColor(32, 32, 32, 255)
+  love.graphics.rectangle('fill', xx, yy, ww, hh / 2)
+  love.graphics.setColor(16, 16, 16, 255)
+  love.graphics.rectangle('fill', xx, yy + hh / 2, ww, hh / 2)
 
+  love.graphics.setLineWidth(3)
   -- draw left
   if grid[player.x - 1][player.y] == 1 then
     local x1 = xx
@@ -125,7 +128,11 @@ function view_draw()
     local y3 = yy + hh - hh / 4
     local x4 = xx
     local y4 = yy + hh
-    love.graphics.line(x1, y1, x2, y2, x3, y3, x4, y4)
+    love.graphics.setColor(64, 64, 64, 255)
+    love.graphics.polygon('fill', x1, y1, x2, y2, x3, y3, x4, y4)
+    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.polygon('line', x1, y1, x2, y2, x3, y3, x4, y4)
+
   end
   -- draw right
   if grid[player.x + 1][player.y] == 1 then
@@ -137,7 +144,10 @@ function view_draw()
     local y3 = yy + hh - hh / 4
     local x4 = x1
     local y4 = yy + hh
-    love.graphics.line(x1, y1, x2, y2, x3, y3, x4, y4)
+    love.graphics.setColor(64, 64, 64, 255)
+    love.graphics.polygon('fill', x1, y1, x2, y2, x3, y3, x4, y4)
+    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.polygon('line', x1, y1, x2, y2, x3, y3, x4, y4)
   end
 
   -- draw left far
@@ -150,7 +160,10 @@ function view_draw()
     local y3 = y2 + hh / 4
     local x4 = x1
     local y4 = yy + hh - hh / 4
-    love.graphics.line(x1, y1, x2, y2, x3, y3, x4, y4)
+    love.graphics.setColor(48, 48, 48, 255)
+    love.graphics.polygon('fill', x1, y1, x2, y2, x3, y3, x4, y4)
+    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.polygon('line', x1, y1, x2, y2, x3, y3, x4, y4)
   end
   -- draw right far
   if grid[player.x + 1][player.y - 1] == 1 and grid[player.x][player.y - 1] == 0 then
@@ -162,11 +175,11 @@ function view_draw()
     local y3 = y2 + hh / 4
     local x4 = x1
     local y4 = yy + hh - hh / 4
-    love.graphics.line(x1, y1, x2, y2, x3, y3, x4, y4)
+    love.graphics.setColor(48, 48, 48, 255)
+    love.graphics.polygon('fill', x1, y1, x2, y2, x3, y3, x4, y4)
+    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.polygon('line', x1, y1, x2, y2, x3, y3, x4, y4)
   end
-
-
-
 
   -- draw front center
   if grid[player.x][player.y - 1] == 1 then
@@ -174,7 +187,10 @@ function view_draw()
     local y1 = yy + hh / 4
     local w1 = ww / 2
     local h1 = hh / 2
-    love.graphics.rectangle('line', x1, y1, w1, h1)
+    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.rectangle('fill', x1, y1, w1, h1)
+    love.graphics.setColor(64, 64, 64, 255)
+    love.graphics.rectangle('fill', x1, y1, w1, h1)
   end
   -- draw font left
   if grid[player.x - 1][player.y -1] == 1 and grid[player.x - 1][player.y] == 0 then
@@ -182,7 +198,10 @@ function view_draw()
     local y1 = yy + hh / 4
     local w1 = ww / 4
     local h1 = hh / 2
-    love.graphics.rectangle('line', x1, y1, w1, h1)
+    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.rectangle('fill', x1, y1, w1, h1)
+    love.graphics.setColor(64, 64, 64, 255)
+    love.graphics.rectangle('fill', x1, y1, w1, h1)
   end
   -- draw font left
   if grid[player.x + 1][player.y -1] == 1 and grid[player.x + 1][player.y] == 0 then
@@ -190,7 +209,10 @@ function view_draw()
     local y1 = yy + hh / 4
     local w1 = ww / 4
     local h1 = hh / 2
-    love.graphics.rectangle('line', x1, y1, w1, h1)
+    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.rectangle('fill', x1, y1, w1, h1)
+    love.graphics.setColor(64, 64, 64, 255)
+    love.graphics.rectangle('fill', x1, y1, w1, h1)
   end
   -- draw front center far
   if grid[player.x][player.y - 2] == 1 and grid[player.x][player.y - 1] == 0 then
@@ -198,7 +220,15 @@ function view_draw()
     local y1 = yy + hh / 4 + ww / 8
     local w1 = ww / 4
     local h1 = hh / 4
-    love.graphics.rectangle('line', x1, y1, w1, h1)
+    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.rectangle('fill', x1, y1, w1, h1)
+    love.graphics.setColor(48, 48, 48, 255)
+    love.graphics.rectangle('fill', x1, y1, w1, h1)
   end
+
+  -- border
+  love.graphics.setLineWidth(1)
+  love.graphics.setColor(255, 255, 255, 255)
+  love.graphics.rectangle('line', xx, yy, ww, hh)
 
 end
