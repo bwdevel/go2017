@@ -1,6 +1,7 @@
 require './viewport'
 
 function love.load()
+  love.graphics.setBackgroundColor(32, 0, 0)
   love.filesystem.setIdentity('screenshots')
   debug = false
   grid = {}
@@ -24,10 +25,29 @@ function love.load()
 
   arrow = love.graphics.newImage('assets/img/arrow_01.png')
   rotations = {0, (math.pi * 2) / 4, math.pi, math.pi + math.pi / 2}
+
+  viewport  = {}
+  viewport.w = 512
+  viewport.h = 512
+  viewport.x = 100
+  viewport.y = love.graphics.getHeight() / 2 - viewport.h / 2
+  viewport.ox = 0
+  viewport.oy = 0
+
+  viewport.stencil = function()
+    local w = viewport.w
+    local h = viewport.h
+    local x = viewport.x + viewport.ox
+    local y = viewport.y + viewport.oy
+    love.graphics.rectangle('fill', x, y, w, h)
+  end
+
+  shaker = shake_init(0, 0)
 end
 
 function love.update(dt)
-
+  shake_update(shaker, dt)
+  --viewport_update(dt)
 end
 
 function love.draw()
@@ -78,21 +98,36 @@ function love.keyreleased(key)
     print("Creating screenshot: " .. filename)
     screenshot:encode('png', filename)
   end
+  if key == 'v' then
+    --[[viewport.ox = math.random(5.0, 10.0)
+    if math.random(0, 1) == 1 then viewport.ox = -(viewport.ox) end
+    viewport.oy = math.random(5.0, 10.0)
+    if math.random(0, 1) == 1 then viewport.oy = -(viewport.oy) end
+    ]]
+    shaker = shake_init(5, 0.5)
+  end
 end
 
 function debug_draw()
+  local debug_text = {
+    'FPS: ' .. tostring(love.timer.getFPS()),
+    'Player x/y: ' .. tostring(player.x) .. '/' .. tostring(player.y),
+    'Current Sqr Val: ' .. tostring(grid[player.x][player.y]),
+    'Player Rot: ' .. tostring(player.rot) .. '(' .. tostring(rotations[player.rot]) .. ')',
+    'Viewport offset (x/y): ' .. tostring(viewport.ox) .. '/' .. tostring(viewport.oy)
+  }
   local x = 10
   local y = 10
-  local w = 100
-  local h = 50
+  local w = 400
+  local h = 16 * #debug_text + 4
   love.graphics.setColor(0, 0, 0, 128)
   love.graphics.rectangle('fill', x, y, w, h)
   love.graphics.setColor(255, 255, 255, 255)
   love.graphics.rectangle('line', x, y, w, h)
-  love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), x + 2, y + 2)
-  love.graphics.print('Player x/y: ' .. tostring(player.x) .. '/' .. tostring(player.y), x + 2, y + 14)
-  love.graphics.print('Current Sqr Val: ' .. tostring(grid[player.x][player.y]), x + 2, y + 26)
-  love.graphics.print('Player Rot: ' .. tostring(player.rot) .. '(' .. tostring(rotations[player.rot]) .. ')', x + 2, y + 38)
+
+  for i = 1, #debug_text, 1 do
+    love.graphics.print(tostring(debug_text[i]), x + 2, y + (i - 1) * 16 + 2)
+  end
 end
 
 function grid_draw()
@@ -113,8 +148,6 @@ function grid_draw()
   end
 end
 
-
-
 function rotate_grid(tbl)
   -- https://gist.github.com/LaserDogRob/5604878
   local out = {}
@@ -128,7 +161,6 @@ function rotate_grid(tbl)
   end
   return out
 end
-
 
 function print_grid(grid)
   for x = 1, #grid, 1 do

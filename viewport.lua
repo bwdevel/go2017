@@ -1,8 +1,42 @@
+function viewport_init()
+
+end
+
+function viewport_update(dt)
+  -- viewport shake update and decay
+  if viewport.ox ~= 0.0 then
+    local neg = false
+    if viewport.ox < 0.0 then neg = true end
+    viewport.ox = math.abs(viewport.ox)
+    local diff = viewport.ox - viewport.ox / 50
+    local diff = diff * dt
+    viewport.ox = viewport.ox - diff
+    if viewport.ox < 1.0 then viewport.ox = 0 end
+    if not neg then viewport.ox = -(viewport.ox) end
+  end
+  if viewport.oy ~= 0.0 then
+    local neg = false
+    if viewport.oy < 0.0 then neg = true end
+    viewport.oy = math.abs(viewport.oy)
+    local diff = viewport.oy - viewport.oy / 50
+    local diff = diff * dt
+    viewport.oy = viewport.oy - diff
+    if viewport.oy < 1.0 then viewport.oy = 0 end
+    if not neg then viewport.oy = -(viewport.oy) end
+  end
+
+end
+
 function view_draw()
-  local xx = 100
-  local yy = love.graphics.getHeight() / 2 - 512 / 2
-  local ww = 512
-  local hh = 512
+  love.graphics.stencil(viewport.stencil, "replace", 1)
+  love.graphics.setStencilTest("greater", 0)
+
+  love.graphics.setColor(255, 128, 128, 255)
+  love.graphics.circle("fill", 20, 20, 5000)
+  local xx = viewport.x + viewport.ox
+  local yy = viewport.y + viewport.oy
+  local ww = viewport.w
+  local hh = viewport.h
   -- draw floor and ceiling
   love.graphics.setColor(24, 24, 24, 255)
   love.graphics.rectangle('fill', xx, yy, ww, hh / 2)
@@ -182,6 +216,7 @@ function view_draw()
   love.graphics.setColor(255, 255, 255, 255)
   love.graphics.rectangle('line', xx, yy, ww, hh)
 
+  love.graphics.setStencilTest()
 end
 
 function wall_draw_quad(dist, x1, y1, x2, y2, x3, y3, x4, y4)
@@ -208,4 +243,24 @@ function wall_draw_rect(dist, x, y, w, h)
   love.graphics.rectangle('fill', x, y, w, h)
   love.graphics.setColor(0, 0, 0, 255)
   love.graphics.rectangle('line', x, y, w, h)
+end
+
+-- shaker from: https://carelesslabs.wordpress.com/2014/05/08/simple-screen-shake/
+function shake_init(power, time)
+  local out = {}
+  out.power = power
+  out.time = time
+  out.current_time = 0
+  return out
+end
+function shake_update(shaker, dt)
+  if(shaker.current_time <= shaker.time) then
+    local current_power = shaker.power * ((shaker.time - shaker.current_time) / shaker.time)
+    viewport.ox = -(math.floor( (math.random(0.0, 1.0) - 0.5) * 2 * current_power ))
+    viewport.oy = -(math.floor( (math.random(0.0, 1.0) - 0.5) * 2 * current_power ))
+    shaker.current_time = shaker.current_time + dt
+  else
+    viewport.ox = 0
+    viewport.oy = 0
+  end
 end
