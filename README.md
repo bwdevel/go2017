@@ -1,7 +1,14 @@
-# Game Off 2017 Entry 
+# Game Off 2017 Entry
 
 ## Theme: Throwback
 
 ### a throwback to the days of Wizardy, Standing Stones, and The Bards Tale
 
 https://itch.io/jam/game-off-2017
+
+
+Helpful links:
+
+Raytracing
+http://lodev.org/cgtutor/raycasting.html
+https://love2d.org/forums/viewtopic.php?f=5&t=35876
